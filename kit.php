@@ -126,26 +126,31 @@ function authority($file)
 function createFile($filename)
 {
     $pattern = "/[\/,\*,<,>,\|]/";
-    $current_path = $_SESSION["_path"].'/'.$filename;
+    $current_path = $_SESSION["path"].'/'.$filename;
     if(preg_match($pattern,basename($filename)))
     {
-        echo '<script type="text/javascript">alert("不合法的文件名");</script>';
+        //echo '<script type="text/javascript">alert("不合法的文件名");</script>';
+        echo 'invalid_filename';
     }
     else
     {
         if(file_exists($current_path))
         {
-            echo '<script type="text/javascript">confirm("文件已存在");</script>';
+            //echo '<script type="text/javascript">confirm("文件已存在");</script>';
+            echo 'file_exist';
         }
         else
         {
             if(!touch($current_path))
             {
-                echo '<script type="text/javascript">alert("创建失败");</script>';
+                //echo '<script type="text/javascript">alert("创建失败");</script>';
+                echo 'failed';
             }
             else
             {
-                echo '<script type="text/javascript">alert("创建成功");</script>';
+                //echo '<script type="text/javascript">alert("创建成功");</script>';
+                //echo $current_path;
+                echo "success";
             }
         }
         
@@ -155,7 +160,7 @@ function createFile($filename)
 function createDir($dirname)
 {
     $pattern = "/[\/,\*,<,>,\|]/";
-    $current_path = $_SESSION["_path"].'/'.$dirname;
+    $current_path = $_SESSION["path"].'/'.$dirname;
     //echo $current_path;
     if(preg_match($pattern,$dirname))
     {
@@ -165,7 +170,7 @@ function createDir($dirname)
     {
         if(file_exists($current_path)&&is_dir($current_path))
         {
-            echo 'exist';
+            echo 'dir_exist';
         }
         else
         {
@@ -185,7 +190,7 @@ function createDir($dirname)
 function renameFile($old_filename,$new_filename)
 {
     $pattern = "/[\/,\*,<,>,\|]/";
-    $current_path = $_SESSION["_path"].'/'.$new_filename;
+    $current_path = $_SESSION["path"].'/'.$new_filename;
     if(preg_match($pattern,basename($new_filename)))
     {
         echo '<script type="text/javascript">alert("不合法的文件名");</script>';
@@ -240,16 +245,21 @@ function deleteFile($filename)
 
 function downFile($filename)
 {
-    header("content-disposition:attachment;filename=".nopath_filename($filename));
-    header("content-length:".filesize($filename));
-    readfile($filename);
+    $file =fopen($filename,"r");
+    header("Content-Type:application/octet-stream");
+    header("Accept-Ranges:bytes");
+    header("Accept-Length:".filesize($filename));
+    header("Content-Disposition:attachment;filename=".nopath_filename($filename));
+    echo fread($file,$filesize($filename));
+    fclose($file);
 }
 
-function copyDir($oldpath,$newpath)
+//修改中
+function copyFile($oldpath,$newpath)
 {
     if(strpos($newpath,$oldpath)!==false)
     {
-        echo '<script type="text/javascript">alert("请不要将目录递归复制");</script>';
+        echo  'under_it_self'; //'<script type="text/javascript">alert("请不要将目录递归复制");</script>';
     }
     else
     {
@@ -258,6 +268,7 @@ function copyDir($oldpath,$newpath)
         {
             if(file_exists($newpath.'/'.$dirname))
             {
+                /*
                 $confirm_area=<<<EOF
                 <script type="text/javascript">
                     var yes=confirm("存在同名文件,是否替换");
@@ -267,17 +278,29 @@ function copyDir($oldpath,$newpath)
                     }
                 </script>
 EOF;
+*/
+                
                 if($_REQUEST["confirm"]==NULL)
                 {
-                    echo $confirm_area;
+                    //echo $confirm_area;
+                    echo "file_exist";
+                    return false;
                 }
-                if($_REQUEST["confirm"]==yes)
-                    copy($oldpath,$newpath.'/'.$dirname);
+                if($_REQUEST["confirm"]=="yes")
+                    if(!copy($oldpath,$newpath.'/'.$dirname))
+                    {
+                        echo "failed";
+                        return false;
+                    }
             }
             else
             {
-                echo $oldpath;
-                copy($oldpath,$newpath.'/'.$dirname);
+                //echo $oldpath;
+                if(!copy($oldpath,$newpath.'/'.$dirname))
+                {
+                    echo "failed";
+                    return false;
+                }
             }
         }
         else
@@ -285,14 +308,22 @@ EOF;
             $arr = readDirectory($oldpath);
             if(!is_dir($newpath.'/'.$dirname))
             {
-                mkdir($newpath.'/'.$dirname,0777,true);
+                if(!mkdir($newpath.'/'.$dirname,0777,true))
+                {
+                    echo "failed";
+                    return false;
+                }
                 foreach($arr["file"] AS $file_name)
                 {
                     $old_path = $oldpath.'/'.$file_name;
                     $new_path = $newpath.'/'.$dirname.'/'.$file_name;
                     //echo $old_path."^^^";
                     //echo $new_path."@@@";
-                    copy($old_path,$new_path);
+                    if(!copy($old_path,$new_path))
+                    {
+                        echo "failed";
+                        return false;
+                    }
                 }
                 foreach($arr["dir"] AS $dir_name)
                 {
@@ -300,13 +331,18 @@ EOF;
                     $new_path = $newpath.'/'.$dirname;
                     //echo $old_path."***";
                     //echo $new_path."---";
-                    copyDir($old_path,$new_path);
+                    if(!copyFile($old_path,$new_path))
+                    {
+                        echo "failed";
+                        return false;
+                    }
                 }
             
             }
             else
             {
-                echo '<script type="text/javascript">alert("存在同名目录，请重命名后再试");</script>';
+                echo 'dir_exist';
+                return false;
             }
         }
     }
@@ -371,12 +407,12 @@ function is_valid($file)
         }
         return false;
     }
-    else if($file["size"]>52428800)
+    else if($file["size"]>20971520)
     {
         echo "size_beyond_limit";
         return false;
     }
-    else if(file_exists($_SESSION["_path"].'/'.$file["name"]))
+    else if(file_exists($_SESSION["path"].'/'.$file["name"]))
     {
         $new_name = substr(md5(time()),5,5).$file["name"];
         return $new_name;
@@ -388,9 +424,10 @@ function is_valid($file)
 function uploadFile($file)
 {
     $result = is_valid($file);
+    //echo $file["name"];
     if($result === true)
     {
-        $des_path = $_SESSION["_path"].'/'.$file["name"];
+        $des_path = $_SESSION["path"].'/'.$file["name"];
         if(move_uploaded_file($file["tmp_name"],$des_path))
         {
             echo "success";
@@ -402,7 +439,7 @@ function uploadFile($file)
     }
     else if($result!==false)
     {
-        $des_path = $_SESSION["_path"].'/'.$result;
+        $des_path = $_SESSION["path"].'/'.$result;
         if(move_uploaded_file($file["tmp_name"],$des_path))
         {
             echo "rename_success";
@@ -411,6 +448,10 @@ function uploadFile($file)
         {
             echo "failed";
         }
+    }
+    else
+    {
+        echo "unknown_error";
     }
 }
 
