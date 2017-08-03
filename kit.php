@@ -245,15 +245,14 @@ function deleteFile($filename)
   }
 }
 
+//下载
 function downFile($filename)
 {
-  $file =fopen($filename,"r");
   header("Content-Type:application/octet-stream");
   header("Accept-Ranges:bytes");
   header("Accept-Length:".filesize($filename));
   header("Content-Disposition:attachment;filename=".nopath_filename($filename));
-  echo fread($file,$filesize($filename));
-  fclose($file);
+  readfile($filename);
 }
 
 //粘贴功能
@@ -464,4 +463,27 @@ function uploadFile($file)
   }
 }
 
+function login($username,$password)
+{
+  $log_info = mysql_connect("localhost","log_info","120120");
+  mysql_select_db("log_info",$log_info);
+  $query = "SELECT password FROM log_info WHERE username = $username";
+  $result = mysql_query($query);
+  $data_pointer = mysql_fetch_array($result);
+  if($data_pointer == NULL)
+  {
+    $_SESSION["log_status"] = "no_usr";
+    header("Location:login.php");
+  }
+  if($password == $data_pointer["password"])
+  {
+    header("Location:index.php");
+    return true;
+  }
+  else
+  {
+    $_SESSION["log_status"] = "ps_error";
+    header("Location:login.php");
+  }
+}
 ?>

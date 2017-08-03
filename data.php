@@ -11,6 +11,11 @@
     {
       $_SESSION["clipper"] = $_REQUEST["clipper"];
     }
+    if($_Requet["username"]!=NULL&&$_REQUEST["password"]!=NULL)
+    {
+      $_SESSION["username"] = $_Requet["username"];
+      $_SESSION["password"] = $_Requet["password"];
+    }
     switch($act)
     {
         case "create_file":
@@ -44,6 +49,9 @@
         case "clear_clipper":
           unset($_SESSION["clipper"]);
           echo "success";
+          break;
+        case "login":
+          login($_SESSION["username"],$_SESSION["password"]);
           break;
     }
     //print_r ($_FILES);

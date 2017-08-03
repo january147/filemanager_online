@@ -101,7 +101,7 @@ EOF;
             <span onclick="cut('<?php echo $currentpath?>')">剪切</span>
             <span class="icon icon-small button" onclick="<?php echo"renameFile('$currentpath')" ?>"><span class="icon-file"></span></span>
             <span class="icon icon-small button" onclick="<?php echo"deleteFile('$currentpath')" ?>"><span class="icon-minus"></span></span>
-            <span class="icon icon-small button" onclick="<?php echo"downFile('$currentpath')" ?>"><span class="icon-download"></span></span>
+            <a href="data.php?act=down_file&filename=<?php echo $currentpath ?>"><span class="icon icon-small button" ?><span class="icon-download"></span></span></a>
           </td>  
         </tr>
       <?php } ?>
