@@ -1,3 +1,4 @@
+<?php session_start()?>
 <!DOCTYPE HTML>
 <html>
   <head>
@@ -19,21 +20,30 @@
     </div>
     <script text="text/javascript" src="js/login.js"></script>
     <script text="text/javascript">
-      $log_status = "<?php echo $SESSION["log_status"]?>";
-      if($log_status == "ps_error")
+    window.onload=function()
+    {
+      log_status = "<?php echo $_SESSION["log_status"]?>";
+      if(log_status == "ps_error")
       {
         password = document.getElementById("password");
         password.value = "";
         password.setAttribute("placeholder","用户名和密码不匹配");
         password.focus();
       }
-      else if( $log_status == "no_usr")
+      else if( log_status == "no_usr")
       {
+        //alert("用户名不存在");
         username = document.getElementById("username");
         username.value = "";
-        username.setAttribute("placeholder","用户名不存在");
+        username.setAttribute("placeholder","用户名不存在,请重新输入");
         username.focus();
       }
-    <script>
+      else if(log_status == "no_dir")
+      {
+        alert("当前用户没有访问权限");
+      }
+    }
+    </script>
   </body>
 <html>
+<?php unset($_SESSION["log_status"])?>

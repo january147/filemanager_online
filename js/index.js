@@ -71,8 +71,8 @@ function createDir()
 function deleteDir(dirname)
 {
   var arr = dirname.split("/");
-  brief_dirname = arr[arr.length-1];
-  if(confirm("确定要删除目录"+brief_dirname+"吗？")==false)
+  //brief_dirname = arr[arr.length-1];
+  if(confirm("确定要删除目录"+dirname+"吗？")==false)
   {
     return;
   }
@@ -120,8 +120,8 @@ function renameFile(old_filename)
 function deleteFile(filename)
 {
   var arr = filename.split("/");
-  brief_filename = arr[arr.length-1];
-  if(!confirm("是否确定删除文件"+brief_filename))
+  //brief_filename = arr[arr.length-1];
+  if(!confirm("是否确定删除文件"+filename))
   {
     return
   }
@@ -158,7 +158,7 @@ function cut(filename)
     if (xmlhttp.readyState==4 && xmlhttp.status==200)
     {
       var paste = document.getElementById("paste");
-      paste.style.border = "solid";
+      paste.style.backgroundColor = "black";
     }
   }
 }
@@ -226,7 +226,7 @@ function doUpFile()
               alert("存在同名文件，上传的文件已被重命名");
               break;
             default:
-              document.write(xmlhttp.responseText);
+              alert(xmlhttp.responseText);
               return;
               break;
           }
@@ -255,7 +255,7 @@ function downFile(filename)
 }
 function back(former_dir)
 {
-  window.location.href="index.php?path="+former_dir;
+  window.location.href="index.php?path=former";
 }
 
 //粘贴按钮功能
@@ -267,13 +267,13 @@ function paste_button_click()
 }
 function paste_button_dbclick()
 {
-  //alert("双击触发");
+  alert("双击触发");
   clearTimeout(timer);
   clear_clipper();
 }
 function paste()
 {
-  //alert("按下了粘贴键");
+  alert("按下了粘贴键");
   var xmlhttp= new XMLHttpRequest();
   xmlhttp.onreadystatechange=function()
   {
@@ -353,6 +353,8 @@ function uploadComplete(){
   process.style.display = "none";
   process.style.width = 0;
 }
+
+//
 
 //xmlhttp响应函数
 function answer(xmlhttp,display)

@@ -1,8 +1,9 @@
 <?php
     require_once 'kit.php';
-   $modify_filename = $_GET["filename"];
-    $act = $_GET["act"];
-   $brief_filename = nopath_filename($modify_filename);
+    session_start();
+    $operation_path = $_SESSION["rootpath"].$_SESSION["path"].'/'.$_REQUEST["filename"];
+    $act = $_REQUEST["act"];
+    $filename = $_REQUEST["filename"];
 ?>
 <!DOCTYPE HTML>
 <html>
@@ -77,23 +78,23 @@
         </script>
     </head>
     <body>
-        <div id ="title"><?php echo "<h1>$brief_filename</h1>" ?></div>
+        <div id ="title"><?php echo "<h1>$filename</h1>" ?></div>
         <div id ="content">
             <?php
             switch($act)
             {
                 case "show_content":
-                $contents=file_get_contents($modify_filename);
-                if(isPicture($modify_filename))
+                $contents=file_get_contents($operation_path);
+                if(isPicture($operation_path))
                 {
                     $view_area=<<<EOF
-                    <img src='$modify_filename'> <br />
+                    <img src='$operation_path'> <br />
 EOF;
                 }
-                else if(isMusic($modify_filename))
+                else if(isMusic($operation_path))
                 {
                     $view_area=<<<EOF
-                    <audio id ="music" src='$modify_filename'>$modify_filename</audio> <br />
+                    <audio id ="music" src='$operation_path'>$operation_path</audio> <br />
                     <div>
                          <span onclick = "_stop('music')" class="icon icon-huge"><span  id = "stop" class="switch icon-stop"></span></span>
                         <span onclick = "_play('music')" class="icon icon-huge"><span  id = "status" class="switch icon-play"></span></span>

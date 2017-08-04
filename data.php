@@ -1,53 +1,59 @@
 <?php
     require_once "kit.php";
     session_start();
-    $modify_filename = $_REQUEST["filename"];
     $act = $_REQUEST["act"];
     if($_REQUEST["model"]!=NULL)
     {
       $_SESSION["model"] = $_REQUEST["model"];
     }
-    if($_REQUEST["clipper"]!=NULL&&preg_match('/^\.\/file/',$_REQUEST["clipper"]))
+    if($_REQUEST["clipper"]!=NULL)
     {
-      $_SESSION["clipper"] = $_REQUEST["clipper"];
+      $_SESSION["clipper"] = $_SESSION["path"].'/'.$_REQUEST["clipper"];
     }
-    if($_Requet["username"]!=NULL&&$_REQUEST["password"]!=NULL)
+    if($_REQUEST["username"]!=NULL&&$_REQUEST["password"]!=NULL)
     {
-      $_SESSION["username"] = $_Requet["username"];
-      $_SESSION["password"] = $_Requet["password"];
+      $_SESSION["username"] = $_REQUEST["username"];
+      $_SESSION["password"] = $_REQUEST["password"];
     }
+    $operation_path = $_SESSION["rootpath"].$_SESSION["path"].'/'.$_REQUEST["filename"];
+    
     switch($act)
     {
         case "create_file":
-          createFile($modify_filename);
+          createFile($operation_path,$_REQUEST["filename"]);
           break;
         case "rename_file":
-          $new_filename = $_REQUEST["new_name"];
-          renameFile($modify_filename,$new_filename);
+          $new_filename = $_SESSION["rootpath"].$_SESSION["path"].'/'.$_REQUEST["new_name"];
+          renameFile($operation_path,$new_filename);
           break;
         case "down_file":
-          downFile($modify_filename);
+          downFile($operation_path);
           break;
         case "paste":
-          //echo 'act'.$_SESSION["model"];
-          //echo 'clipper'.$_SESSION["clipper"];
-          //echo 'current_path'.$_SESSION["path"];
-          paste();
+          $clipper_path = $_SESSION["rootpath"].$_SESSION["clipper"];
+          $current_path = $_SESSION["rootpath"].$_SESSION["path"];
+          //调试代码
+          //echo $clipper_path.'@';
+          //echo $current_path.'@';
+          //
+          paste($clipper_path,$current_path,$_SESSION["model"]);
           break;
         case "create_dir":
-          createDir($modify_filename);
+          createDir($operation_path,$_REQUEST["filename"]);
           break;
         case "delete_dir":
-          deleteDir($modify_filename);
+          deleteDir($operation_path);
           break;
         case "delete_file":
-          deleteFile($modify_filename);
+          deleteFile($operation_path);
           break;
         case "upload_file":
-          uploadFile($_FILES["myfile"]);
+          $current_path = $_SESSION["rootpath"].$_SESSION["path"];
+          uploadFile($_FILES["myfile"],$current_path);
           break;
         case "clear_clipper":
           unset($_SESSION["clipper"]);
+          unset($_SESSION["model"]);
           echo "success";
           break;
         case "login":

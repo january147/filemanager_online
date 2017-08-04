@@ -3,26 +3,43 @@
     session_start();
    
     //调试用
-    echo $_SESSION["path"];
-    echo $_SESSION["clipper"];
+    //echo $_SESSION["path"]."@";
+    //echo $_SESSION["clipper"]."@";
+    //echo $_SESSION["model"]."@";
     //
+    
+    //获取主目录
+    if($_SESSION["log_status"] != "ok"||$_SESSION["rootpath"] == NULL)
+    {
+      header("Location:login.php");
+      return false;
+    }
 
     //设置当前路径
-    if($_SESSION["path"] == NULL||$_REQUEST["path"]=="home")
+    if($_REQUEST["path"]=="home")
     {
-      $_SESSION["path"] = './file';
+      $_SESSION["path"] = null;
     }
-    else if(preg_match('/^\.\/file/',$_REQUEST["path"])&&is_dir($_REQUEST["path"]))
+    else if($_REQUEST["path"]=="former")
     {
-      $_SESSION["path"] = $_REQUEST["path"];
+      $former = dirname($_SESSION["path"]);
+      if($former != '\\')
+        $_SESSION["path"] = $former;
+      else
+        $_SESSION["path"] = null;
+      //echo dirname($_SESSION["path"]);
     }
-    else if(!is_dir($_SESSION["path"]))
+    else if($_REQUEST["path"] != NULL&&is_dir($_SESSION["rootpath"].$_SESSION["path"].'/'.$_REQUEST["path"]))
     {
-      $_SESSION["path"] = './file';
+      $_SESSION["path"] = $_SESSION["path"].'/'.$_REQUEST["path"];
+    }
+    else if(!is_dir($_SESSION["rootpath"].$_SESSION["path"]))
+    {
+      $_SESSION["path"] = null;
     }
 
     //读当前目录
-    $path = $_SESSION["path"];
+    $path = $_SESSION["rootpath"].'/'.$_SESSION["path"];
     $file = readDirectory($path);
 ?>
 
@@ -34,16 +51,16 @@
     <link href="css/icon.css" rel="stylesheet">
   </head>
   <body>
-    <div id="title"><h1>MY FILE</h1></div>
-    <table id="navigation">
+    <div id="title">MY FILE</div>
+    <table id="navigation" cellspacing="20px">
       <tr>
-        <td onclick = "home()"><span class="icon icon-small button"><span class="icon-home"></span></span></td>
-        <td onclick = "createFile()"><span class="icon icon-small button"><span class="icon-plus"></span></span></td>
-        <td onclick = "upFile()"><span class="icon icon-small button"><span class="icon-upload"></span></span></td>
-        <td onclick = "createDir()"><span class="icon icon-small button"><span class="icon-folder"></span></span></td>
-        <td onclick="paste_button_click()" ondblclick="paste_button_dbclick()"><span class="icon icon-small button" id="paste" style="border:<?php if($_SESSION["clipper"]!= NULL) echo "solid";?>"><span class="icon-file"></span></span></td>
-        <td onclick = "back('<?php echo dirname($path)?>')"><span class="icon icon-small button"><span class="icon-arrowLeft"></span></span></td>
-        <td width="80%"><td>
+        <td onclick = "home()"><img src="imgs/home.png" alt="home" title="主目录" /></td>
+        <td onclick = "createFile()"><img src="imgs/create_file.png" alt="+file" title="新建文件" /></td>
+        <td onclick = "upFile()"><img src="imgs/upload.png" alt="upload" title="上传" /></td>
+        <td onclick = "createDir()"><img src="imgs/create_dir.png" alt="+dir" title="新建目录" /></td>
+        <td onclick="paste_button_click()" ondblclick="paste_button_dbclick()"><img src="imgs/paste.png" alt="paste" title="粘贴" /></td>
+        <td onclick = "back()"><img src="imgs/back.png" alt="back" title="返回" /></td>
+        <td width="70%"><td>
       </tr>
     </table>
     <table width="100%">
@@ -55,9 +72,12 @@
         <th>存取权限</th>
         <th>操作</th>
       </tr>
+      <!--动态显示目录-->
       <?php
+        $count = 0;
         foreach($file["dir"] as $dir_name)
         {
+          $count++;
           $currentpath = $path."/".$dir_name;
       ?>
         <tr>
@@ -67,18 +87,35 @@
           <td><?php echo date("Y.n.j G:i:s",filemtime($currentpath))?></td>
           <td><?php echo authority($currentpath)?></td>
           <td>
-            <a href="index.php?path=<?php echo $currentpath?>">查看</a>
-            <span onclick="copy('<?php echo $currentpath?>')">复制</span>
-            <span onclick="cut('<?php echo $currentpath?>')">剪切</span>
-            <span class="icon icon-small button" onclick="<?php echo"renameFile('$currentpath')" ?>"><span class="icon-file"></span></span>
-            <span class="icon icon-small button" onclick="<?php echo"deleteDir('$currentpath')" ?>"><span class="icon-minus"></span></span>
+            <a href="index.php?path=<?php echo $dir_name?>"><img src="imgs/open.png" alt="open" title="打开" /></a>
+            <img src="imgs/copy.png" alt="copy" title="复制"  onclick="copy('<?php echo $dir_name?>')" />
+            <img src="imgs/cut.png" alt="cut" title="剪切"  onclick="cut('<?php echo $dir_name?>')" />
+            <img src="imgs/rename.png" alt="rename" title="重命名"  onclick="<?php echo"renameFile('$dir_name')" ?>" />
+            <img src="imgs/delete.png" alt="delete" title="删除"  onclick="<?php echo"deleteDir('$dir_name')" ?>" />
+         
           </td>
         </tr>
       <?php } ?>
+      <!--动态显示文件-->
       <?php
         foreach($file["file"] as $file_name)
         {
+          $count++;
           $currentpath = $path."/".$file_name;
+          $file_name = addslashes($file_name);
+          if(isPicture($file_name))
+          {
+            $src = 'imgs/picture_view.png';
+          }
+          else if(isMusic($file_name))
+          {
+            $src = 'imgs/music_view.png';
+          }
+          else
+          {
+            $src = 'imgs/view.png';
+            $type = 'other';
+          }
       ?>
         <tr>
           <td><?php echo $file_name ?></td>
@@ -87,21 +124,22 @@
           <td><?php echo date("Y.n.j G:i:s",filemtime($currentpath))?></td>
           <td><?php echo authority($currentpath)?></td>
           <td>
-            <span onclick="view('<?php echo $currentpath?>')">查看</span>
+            <img src="<?php echo $src?>" alt="view" title="查看" onclick="view('<?php echo $file_name?>')"/>
             <?php
-              if(!isPicture($file_name)&&!isMusic($file_name))
+              if($type == 'other')
               {
                 $modify_choice=<<<EOF
-                  <span onclick=edit("$currentpath")>修改</span>
+                  <img src="imgs/edit.png" alt="edit" title="编辑"  onclick=edit("$file_name") />
 EOF;
                 echo $modify_choice;
               }
 ?>
-            <span onclick="copy('<?php echo $currentpath?>')">复制</span>
-            <span onclick="cut('<?php echo $currentpath?>')">剪切</span>
-            <span class="icon icon-small button" onclick="<?php echo"renameFile('$currentpath')" ?>"><span class="icon-file"></span></span>
-            <span class="icon icon-small button" onclick="<?php echo"deleteFile('$currentpath')" ?>"><span class="icon-minus"></span></span>
-            <a href="data.php?act=down_file&filename=<?php echo $currentpath ?>"><span class="icon icon-small button" ?><span class="icon-download"></span></span></a>
+            <img src="imgs/copy.png" alt="copy" title="复制"  onclick="copy('<?php echo $file_name?>')" />
+            <img src="imgs/cut.png" alt="cut" title="剪切"  onclick="cut('<?php echo $file_name?>')" />
+            <img src="imgs/rename.png" alt="rename" title="重命名"  onclick="<?php echo"renameFile('$file_name')" ?>" />
+            <img src="imgs/delete.png" alt="delete" title="删除"  onclick="<?php echo"deleteFile('$file_name')" ?>" />
+            <a href="data.php?act=down_file&filename=<?php echo $file_name ?>" ><img src="imgs/download.png" alt="download" title="下载" /></a>
+            
           </td>  
         </tr>
       <?php } ?>
@@ -109,7 +147,7 @@ EOF;
     <form action="data.php" id = "file_form" method="post">
     <input style="display:none" type = "file" name ="myfile" id = "file" onchange="doUpFile()">
     </form>
-     <div id="process_bar"><div id="process"></div></div>
+    <div id="process_bar"><div id="process"></div></div>
     <script type="text/javascript" src="js/index.js"></script>
   </body>
 </html>

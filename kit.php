@@ -121,10 +121,9 @@ function authority($file)
   return $result;
 }
 
-function createFile($filename)
+function createFile($operation_path,$filename)
 {
   $pattern = "/[\/,\*,<,>,\|]/";
-  $current_path = $_SESSION["path"].'/'.$filename;
   if(preg_match($pattern,basename($filename)))
   {
     //echo '<script type="text/javascript">alert("不合法的文件名");</script>';
@@ -132,14 +131,14 @@ function createFile($filename)
   }
   else
   {
-    if(file_exists($current_path))
+    if(file_exists($operation_path))
     {
       //echo '<script type="text/javascript">confirm("文件已存在");</script>';
       echo 'file_exist';
     }
     else
     {
-      if(!touch($current_path))
+      if(!touch($operation_path))
       {
         //echo '<script type="text/javascript">alert("创建失败");</script>';
         echo 'failed';
@@ -154,10 +153,9 @@ function createFile($filename)
   }
 }
 
-function createDir($dirname)
+function createDir($operation_path,$dirname)
 {
   $pattern = "/[\/,\*,<,>,\|]/";
-  $current_path = $_SESSION["path"].'/'.$dirname;
   //echo $current_path;
   if(preg_match($pattern,$dirname))
   {
@@ -165,13 +163,13 @@ function createDir($dirname)
   }
   else
   {
-    if(file_exists($current_path)&&is_dir($current_path))
+    if(file_exists($operation_path)&&is_dir($operation_path))
     {
       echo 'dir_exist';
     }
     else
     {
-      if(mkdir($current_path,0777,true))
+      if(mkdir($operation_path,0777,true))
       {
         echo 'success';
       }
@@ -186,7 +184,7 @@ function createDir($dirname)
 function renameFile($old_filename,$new_filename)
 {
   $pattern = "/[\/,\*,<,>,\|]/";
-  $current_path = $_SESSION["path"].'/'.$new_filename;
+  $current_path = $_SESSION["rootpath"].$SESSION["path"].'/'.$new_filename;
   if(preg_match($pattern,basename($new_filename)))
   {
     //echo '<script type="text/javascript">alert("不合法的文件名");</script>';
@@ -256,14 +254,14 @@ function downFile($filename)
 }
 
 //粘贴功能
-function paste()
+function paste($src,$des,$mode)
 {
-  if($_SESSION["clipper"]!=NULL)
+  if($src!=NULL)
   {
-    if($_SESSION["model"]=="copy")
-      copyFile($_SESSION["clipper"],$_SESSION["path"]);
-    else 
-      moveFile($_SESSION["clipper"],$_SESSION["path"]);
+    if($mode =="copy")
+      copyFile($src,$des);
+    else if($mode == "cut")
+      moveFile($src,$des);
   }
   else
     echo "nothing in clipper";
@@ -391,7 +389,7 @@ function moveFile($oldpath,$newpath)
 }
 
 //上传文件
-function is_valid($file)
+function is_valid($file,$path)
 {
   if($file["error"]!=0)
   {
@@ -420,7 +418,7 @@ function is_valid($file)
     echo "size_beyond_limit";
     return false;
   }
-  else if(file_exists($_SESSION["path"].'/'.$file["name"]))
+  else if(file_exists($path.'/'.$file["name"]))
   {
     $new_name = substr(md5(time()),5,5).$file["name"];
     return $new_name;
@@ -429,13 +427,13 @@ function is_valid($file)
     return true;
 }
 
-function uploadFile($file)
+function uploadFile($file,$path)
 {
-  $result = is_valid($file);
+  $result = is_valid($file,$path);
   //echo $file["name"];
   if($result === true)
   {
-    $des_path = $_SESSION["path"].'/'.$file["name"];
+    $des_path = $path.'/'.$file["name"];
     if(move_uploaded_file($file["tmp_name"],$des_path))
     {
       echo "success";
@@ -447,7 +445,7 @@ function uploadFile($file)
   }
   else if($result!==false)
   {
-    $des_path = $_SESSION["path"].'/'.$result;
+    $des_path = $path.'/'.$result;
     if(move_uploaded_file($file["tmp_name"],$des_path))
     {
       echo "rename_success";
@@ -465,18 +463,32 @@ function uploadFile($file)
 
 function login($username,$password)
 {
-  $log_info = mysql_connect("localhost","log_info","120120");
-  mysql_select_db("log_info",$log_info);
-  $query = "SELECT password FROM log_info WHERE username = $username";
-  $result = mysql_query($query);
-  $data_pointer = mysql_fetch_array($result);
-  if($data_pointer == NULL)
+  //echo 'username'.$username;
+  //echo 'password'.$password;
+  $log_info = mysqli_connect("localhost","log_info","120120","log_info");
+  $query = "SELECT * FROM log_info WHERE username = '$username'";
+  $result = mysqli_query($log_info,$query);
+  //print_r(mysqli_error($log_info));
+  $data_pointer = mysqli_fetch_array($result);
+  //$count = mysqli_num_rows($result);
+  //print_r($data_pointer);
+  if(!$data_pointer["password"])
   {
+    //echo "no_user";
     $_SESSION["log_status"] = "no_usr";
     header("Location:login.php");
+    return false;
   }
   if($password == $data_pointer["password"])
   {
+    if(!$data_pointer["main_dir"])
+    {
+      $_SESSION["log_status"] = "no_dir";
+      header("Location:login.php");
+      return false;
+    }
+    $_SESSION["rootpath"] = "./file/".$data_pointer["main_dir"];
+    $_SESSION["log_status"] = "ok";
     header("Location:index.php");
     return true;
   }
@@ -484,6 +496,7 @@ function login($username,$password)
   {
     $_SESSION["log_status"] = "ps_error";
     header("Location:login.php");
+    return false;
   }
 }
 ?>
