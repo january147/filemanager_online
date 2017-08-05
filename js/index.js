@@ -158,7 +158,7 @@ function cut(filename)
     if (xmlhttp.readyState==4 && xmlhttp.status==200)
     {
       var paste = document.getElementById("paste");
-      paste.style.backgroundColor = "black";
+      paste.setAttribute("src","imgs/paste_full.png");
     }
   }
 }
@@ -172,7 +172,7 @@ function copy(filename)
     if (xmlhttp.readyState==4 && xmlhttp.status==200)
     {
       var paste = document.getElementById("paste");
-      paste.style.border = "solid";
+      paste.setAttribute("src","imgs/paste_full.png");
     }
   }
 }
@@ -323,7 +323,7 @@ function clear_clipper()
         if(xmlhttp.responseText == "success")
         {
           var paste = document.getElementById("paste");
-          paste.style.border = "none";
+         paste.setAttribute("src","imgs/paste_empty.png");
         }
         else
         {
@@ -348,13 +348,19 @@ function uploadProgress(evt)
     process.display = "block";
   }
 }
-function uploadComplete(){
+function uploadComplete()
+{
   var process = document.getElementById("process");
   process.style.display = "none";
   process.style.width = 0;
 }
 
-//
+//注销
+function logout()
+{
+  if(confirm("您确定要退出吗?"))
+    window.location.href = "data.php?act=logout";
+}
 
 //xmlhttp响应函数
 function answer(xmlhttp,display)

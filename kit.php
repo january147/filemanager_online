@@ -489,6 +489,7 @@ function login($username,$password)
     }
     $_SESSION["rootpath"] = "./file/".$data_pointer["main_dir"];
     $_SESSION["log_status"] = "ok";
+    $_SESSION["username"] = $username;
     header("Location:index.php");
     return true;
   }
@@ -498,5 +499,15 @@ function login($username,$password)
     header("Location:login.php");
     return false;
   }
+}
+function logout()
+{
+  unset($_SESSION["log_status"]);
+  unset($_SESSION["rootpath"]);
+  unset($_SESSION["path"]);
+  unset($_SESSION["model"]);
+  unset($_SESSION["clipper"]);
+  unset($_SESSION["username"]);
+  header("Location:login.php");
 }
 ?>

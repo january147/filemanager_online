@@ -41,6 +41,16 @@
     //读当前目录
     $path = $_SESSION["rootpath"].'/'.$_SESSION["path"];
     $file = readDirectory($path);
+
+    //判断剪切板内容
+    if($_SESSION["clipper"] == NULL)
+    {
+      $paste_src = "imgs/paste_empty.png";
+    }
+    else
+    {
+      $paste_src = "imgs/paste_full.png";
+    }
 ?>
 
 <!DOCTYPE HTML>
@@ -51,25 +61,31 @@
     <link href="css/icon.css" rel="stylesheet">
   </head>
   <body>
-    <div id="title">MY FILE</div>
-    <table id="navigation" cellspacing="20px">
+    <div id="title">
+      <div id="photo_area">
+        <img src="photo/1.png" alt="头像" id="photo" />
+        <div id="menu"><img src="imgs/logout.png" alt="logout" title="注销" id="logout_button" onclick="logout()"></div>
+      </div>
+      <div id="name"><?php echo $_SESSION["username"]?></div>
+    </div>
+    <table id="navigation" cellspacing="10px">
       <tr>
         <td onclick = "home()"><img src="imgs/home.png" alt="home" title="主目录" /></td>
         <td onclick = "createFile()"><img src="imgs/create_file.png" alt="+file" title="新建文件" /></td>
         <td onclick = "upFile()"><img src="imgs/upload.png" alt="upload" title="上传" /></td>
         <td onclick = "createDir()"><img src="imgs/create_dir.png" alt="+dir" title="新建目录" /></td>
-        <td onclick="paste_button_click()" ondblclick="paste_button_dbclick()"><img src="imgs/paste.png" alt="paste" title="粘贴" /></td>
+        <td onclick="paste_button_click()" ondblclick="paste_button_dbclick()"><img src="<?php echo $paste_src?>" alt="paste" title="粘贴" id="paste" /></td>
         <td onclick = "back()"><img src="imgs/back.png" alt="back" title="返回" /></td>
         <td width="70%"><td>
       </tr>
     </table>
-    <table width="100%">
+    <table id="file_content">
       <tr>
-        <th>文件名</th>
-        <th>类型</th>
-        <th>文件大小</th>
-        <th>修改时间</th>
-        <th>存取权限</th>
+        <th id="filename">文件名</th>
+        <th id="type">类型</th>
+        <th id="size">文件大小</th>
+        <th id="m_time">修改时间</th>
+        <th id="authority">存取权限</th>
         <th>操作</th>
       </tr>
       <!--动态显示目录-->

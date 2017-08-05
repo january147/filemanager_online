@@ -59,6 +59,9 @@
         case "login":
           login($_SESSION["username"],$_SESSION["password"]);
           break;
+        case "logout":
+          logout();
+          break;
     }
     //print_r ($_FILES);
 ?>
