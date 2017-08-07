@@ -58,10 +58,9 @@
   <head>
     <title>My File</title>
     <link href="css/index.css" rel="stylesheet">
-    <link href="css/icon.css" rel="stylesheet">
   </head>
   <body>
-    <div id="title">
+    <div id="title" onclick="notice('点击了title')">
       <div id="photo_area">
         <img src="photo/1.png" alt="头像" id="photo" />
         <div id="menu"><img src="imgs/logout.png" alt="logout" title="注销" id="logout_button" onclick="logout()"></div>
@@ -122,10 +121,12 @@
           if(isPicture($file_name))
           {
             $src = 'imgs/picture_view.png';
+            $type = 'picture';
           }
           else if(isMusic($file_name))
           {
             $src = 'imgs/music_view.png';
+            $type = 'music';
           }
           else
           {

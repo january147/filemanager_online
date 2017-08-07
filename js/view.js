@@ -38,25 +38,52 @@ function stop()
   music_handle.pause();
 }
 
+var music_paused=true;
 var effect=false;
-
+var process_percentage;
+var total_width = document.getElementById("process_bar").offsetWidth;
 function moveActive()
 {
-  //alert("点击触发");
   effect = true;
+  music_paused = music_handle.paused;
 }
 function moving()
 {
   //alert("移动触发");
   var process_in = document.getElementById("process_in");
-  var test =document.getElementById("music_picture");
   if(effect)
   {
+    if(!music_paused)
+    {
+      music_handle.pause();
+    }
     process_in.style.width = event.offsetX +"px";
   }
- 
 }
 function moveEnd()
 {
-   effect = false;
+  var process_in = document.getElementById("process_in");
+  process_in.style.width = event.offsetX +"px";
+  percent = event.offsetX/total_width;
+  music_handle.currentTime = music_handle.duration * percent;
+  if(!music_paused)
+  {
+    music_handle.play();
+  }
+  effect = false;
+}
+
+function mute()
+{
+  var mute_picture = document.getElementById("mute_picture");
+  if(music_handle.muted)
+  {
+    music_handle.muted = false;
+    mute_picture.setAttribute("src","imgs/mute.png")
+  }
+  else
+  {
+    music_handle.muted = true;
+    mute_picture.setAttribute("src","imgs/no_mute.png")
+  }
 }

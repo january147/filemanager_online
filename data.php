@@ -62,6 +62,9 @@
         case "logout":
           logout();
           break;
+        case "save_change":
+          saveChange($_REQUEST["editing"],$_REQUEST["contents"]);
+          break;
     }
     //print_r ($_FILES);
 ?>

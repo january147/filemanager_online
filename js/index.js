@@ -187,7 +187,7 @@ function doUpFile()
   {
     if(file_handle.files[0].size > 20971520)
     {
-        alert(file_handle.files[0].size);
+        //alert(file_handle.files[0].size);
         alert("文件过大，最多20M");
         return;
     }
@@ -195,7 +195,7 @@ function doUpFile()
     var formdata = new FormData(file_form);
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.upload.addEventListener("progress",uploadProgress,false);
-      xmlhttp.upload.addEventListener("load",uploadComplete,false);
+    xmlhttp.upload.addEventListener("load",uploadComplete,false);
     xmlhttp.onreadystatechange=function()
     {
       if (xmlhttp.readyState==4 && xmlhttp.status==200)
@@ -267,13 +267,13 @@ function paste_button_click()
 }
 function paste_button_dbclick()
 {
-  alert("双击触发");
+  //alert("双击触发");
   clearTimeout(timer);
   clear_clipper();
 }
 function paste()
 {
-  alert("按下了粘贴键");
+  //alert("按下了粘贴键");
   var xmlhttp= new XMLHttpRequest();
   xmlhttp.onreadystatechange=function()
   {
@@ -362,12 +362,7 @@ function logout()
     window.location.href = "data.php?act=logout";
 }
 
+
+//延时函数
+
 //xmlhttp响应函数
-function answer(xmlhttp,display)
-{
-  if (xmlhttp.readyState==4 && xmlhttp.status==200)
-  {
-    if(display)
-      alert(xmlhttp.responseText);
-  }
-}

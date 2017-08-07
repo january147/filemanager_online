@@ -510,4 +510,16 @@ function logout()
   unset($_SESSION["username"]);
   header("Location:login.php");
 }
+
+function saveChange($editing_file_path,$contens)
+{
+  if(file_put_contents($editing_file_path,$contens))
+  {
+    echo "success";
+  }
+  else
+  {
+    echo "failed";
+  }
+}
 ?>

@@ -7,6 +7,10 @@ body{
 }
 img{
     height:1.5em;
+    transition:box-shadow 0.2s;
+}
+img:hover{
+    box-shadow: 0px 0px 4px 2px gray;
 }
 table{
     text-align: left;
@@ -57,9 +61,9 @@ th{
     left:2.1em;
 }
 #menu{
-    width: 100px;
+    width: 80px;
     height: 0.8em;
-    padding:0.1em;
+    padding: 0.1em 0.4em;
     background-color: #e8e8e8;
     position: absolute;
     opacity:0;
