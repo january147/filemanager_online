@@ -38,11 +38,11 @@
       $_SESSION["path"] = null;
     }
 
-    //读当前目录
+    //读当前目录文件
     $path = $_SESSION["rootpath"].'/'.$_SESSION["path"];
     $file = readDirectory($path);
 
-    //判断剪切板内容
+    //判断剪切板是否有内容
     if($_SESSION["clipper"] == NULL)
     {
       $paste_src = "imgs/paste_empty.png";
@@ -56,6 +56,7 @@
 <!DOCTYPE HTML>
 <html>
   <head>
+    <div id="test" style="position:fixed;bottom:20px;"></div><!--测试数据显示的位置-->
     <title>My File</title>
     <link href="css/index.css" rel="stylesheet">
   </head>

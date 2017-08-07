@@ -490,6 +490,7 @@ function login($username,$password)
     $_SESSION["rootpath"] = "./file/".$data_pointer["main_dir"];
     $_SESSION["log_status"] = "ok";
     $_SESSION["username"] = $username;
+    unset($_SESSION["password"]);
     header("Location:index.php");
     return true;
   }

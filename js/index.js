@@ -1,3 +1,4 @@
+var test=document.getElementById("test");
 function home()
 {
   window.location.href = "index.php?path=home";
@@ -194,8 +195,8 @@ function doUpFile()
     var file_form = document.getElementById("file_form");
     var formdata = new FormData(file_form);
     var xmlhttp = new XMLHttpRequest();
-    xmlhttp.upload.addEventListener("progress",uploadProgress,false);
-    xmlhttp.upload.addEventListener("load",uploadComplete,false);
+    xmlhttp.upload.addEventListener("progress",uploadProgress);
+    xmlhttp.upload.addEventListener("load",uploadComplete);
     xmlhttp.onreadystatechange=function()
     {
       if (xmlhttp.readyState==4 && xmlhttp.status==200)
@@ -340,19 +341,20 @@ function clear_clipper()
 //文件上传事件处理函数
 function uploadProgress(evt)
 {
+  
   var process = document.getElementById("process");
   if(evt.lengthComputable)
   {
     var percentage = Math.round(evt.loaded*100/evt.total);
+    /*显示进的百分比数字*/
+    //test.innerHTML=percentage;
     process.style.width = percentage+"%";
-    process.display = "block";
   }
 }
 function uploadComplete()
 {
   var process = document.getElementById("process");
-  process.style.display = "none";
-  process.style.width = 0;
+  //process.style.width = 0;
 }
 
 //注销

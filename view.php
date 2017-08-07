@@ -1,6 +1,11 @@
 <?php
     require_once 'kit.php';
     session_start();
+		if($_SESSION["log_status"]!="ok")
+    {
+        echo "非法访问，请先登录";
+        return;
+    }
     $operation_path = $_SESSION["rootpath"].$_SESSION["path"].'/'.$_REQUEST["filename"];
     $act = $_REQUEST["act"];
     $filename = $_REQUEST["filename"];
