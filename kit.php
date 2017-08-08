@@ -184,7 +184,6 @@ function createDir($operation_path,$dirname)
 function renameFile($old_filename,$new_filename)
 {
   $pattern = "/[\/,\*,<,>,\|]/";
-  $current_path = $_SESSION["rootpath"].$SESSION["path"].'/'.$new_filename;
   if(preg_match($pattern,basename($new_filename)))
   {
     //echo '<script type="text/javascript">alert("不合法的文件名");</script>';
@@ -192,14 +191,14 @@ function renameFile($old_filename,$new_filename)
   }
   else 
   { 
-    if(file_exists($current_path))
+    if(file_exists($new_filename))
     {
         //echo '<script type="text/javascript">confirm("文件已存在,请重新命名");</script>';
         echo 'file_exist';
     }
     else
     {
-      if(!rename($old_filename,$current_path))
+      if(!rename($old_filename,$new_filename))
       {
         //echo '<script type="text/javascript">alert("重命名失败");</script>';
         echo 'failed';
