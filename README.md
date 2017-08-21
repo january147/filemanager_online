@@ -41,3 +41,10 @@ ok, now it's the main part
 If you want to test the small filemanager, you need to install LAMP or WAMP. At least you need apache2.4 , php7.0 and Mysql. Besides,  you need to change the arguements*(username and password)* of the functions used to connect to Mysql in function **login()**  in **kit.php**.
 
 ## OK, that's all, thank you.
+
+---
+
+# 2017.8.20 update
+
+A newly organized filemanager in a simple MVC model has been completed. Besides the completely recontructed structure of the program I also add some small improvements. Now the program can be much easier to add new functions, and I'll improve it continuously. Next, I'll give a brief introducion of it.
+
