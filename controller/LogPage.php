@@ -1,32 +1,12 @@
 <?php
-class LogPage{
-  protected function renderPart($view_name,$value)
-  {
-    if($value)
-      extract($value);
-    $view_path = './views/'.$view_name.'.php';
-    //$view_css = './static/css/'.$view_name.'.css';
-    ob_start();
-    include $view_path;
-    $view_content = ob_get_contents();
-    ob_end_clean();
-    return $view_content;
-  }
-  protected function render($view_name,$value)
-  {
-    if($value)
-      extract($value);
-    $view_path = './views/'.$view_name.'.php';
-    $view_css = './static/css/'.$view_name.'.css';
-    $view_js = './static/js/'.$view_name.'.js';
-    $view_content = $this->renderPart($view_name,$value);
-    //return $view_content;
-    ob_start();
-    include './views/layouts/layout.php';
-    $page_content = ob_get_contents();
-    ob_end_clean();
-    return $page_content;
-  }
+class LogPage extends Controller
+{
+  /*当前控制器默认属性编辑，如需使用全局默认值，不要定义相应属性（继承父类属性值）
+  *title为页面标签名称
+  *layout为布局文件路径
+  */
+  protected $title = '登录Air';
+  
   public function login()
   {
     $username = addslashes($_POST['username']);

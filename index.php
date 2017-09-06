@@ -1,10 +1,12 @@
 <?php
   require_once './func/Air.php';
   require_once './func/file_function.php';
+  require_once './controller/Controller.php';
   require_once './controller/MainPage.php';
   require_once './controller/Content.php';
   require_once './controller/LogPage.php';
   require_once './controller/Error.php';
+  require_once './controller/FormPage.php';
   require_once './models/Dir.php';
   require_once './models/File.php';
   session_start();

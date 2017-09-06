@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title><?php echo $_SESSION['username']?></title>
+    <title><?php echo $this->title?></title>
     <link href="./views/layouts/css/MainPage.css" rel="stylesheet">
     <link href="<?php echo $view_css?>" rel="stylesheet">
   </head>

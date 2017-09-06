@@ -31,7 +31,7 @@
               <div onclick="view('<?php echo $content_p['name']?>')"><img src="<?php echo $src?>" alt="view" title="查看" /></div>
             <?php endif?>
             <?php if($content_p['type']=='text'):?>
-              <div onclick="editFile('<?php echo $content_p['name']?>')"><img src="static/imgs/icons/edit.png" alt="edit" title="编辑"/></div>
+              <div onclick="edit('<?php echo $content_p['name']?>')"><img src="static/imgs/icons/edit.png" alt="edit" title="编辑"/></div>
             <?php endif?>
             <div onclick="copyFile('<?php echo $content_p['name']?>')"><img src="static/imgs/icons/copy.png" alt="copy" title="复制" /></div>
             <div onclick="moveFile('<?php echo $content_p['name']?>')"><img src="static/imgs/icons/cut.png" alt="cut" title="剪切"/></div>

@@ -1,32 +1,8 @@
 <?php
-  class MainPage
+  class MainPage extends Controller
   {
-    protected function renderPart($view_name,$value)
-    {
-      extract($value);
-      $view_path = './views/'.$view_name.'.php';
-      //$view_css = './static/css/'.$view_name.'.css';
-      ob_start();
-      include $view_path;
-      $view_content = ob_get_contents();
-      ob_end_clean();
-      return $view_content;
-    }
-    protected function render($view_name,$value)
-    {
-      extract($value);
-      $view_path = './views/'.$view_name.'.php';
-      $view_css = './static/css/'.$view_name.'.css';
-      $view_js = './static/js/'.$view_name.'.js';
-      $view_content = $this->renderPart($view_name,$value);
-      //return $view_content;
-      ob_start();
-      include './views/layouts/Mainpage.php';
-      $page_content = ob_get_contents();
-      ob_end_clean();
-      return $page_content;
-    }
-
+    protected $layout = './views/layouts/MainPage.php';
+    protected $title = '我的文件';
     public function index($part=false)
     { 
       $current_path = $_SESSION['root_path'].$_SESSION['path'];

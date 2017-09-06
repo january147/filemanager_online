@@ -1,6 +1,6 @@
 <div id="content_wrapper">
   <div id = "music_wrapper">
-    <audio id ="music" src="<?php echo $src ?>"  ontimeupdate="getProcess()" onended="stop()"></audio>
+    <audio id ="music" src="<?php echo 'readFile.php?path='.$src ?>"  ontimeupdate="getProcess()" onended="stop()"></audio>
     <div id="music_picture">
     <img src="static/imgs/m_imgs/index.png" alt="图片" id="m_imgs">
     </div>
