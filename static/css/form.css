@@ -1,0 +1,43 @@
+#navigation_wrapper{
+  height:2.5rem;
+  line-height: 2rem;
+  background-color: whitesmoke;
+  box-shadow: 0px 0px 4px 2px gray;
+  margin:0.5rem 0;
+  display:flex;
+  align-items: center;
+  transition:margin 0.5s;
+}
+#navigation_wrapper:hover{
+  margin-top:1rem;
+  margin-bottom:1rem;
+}
+#navigation_wrapper div{
+  padding:0.25rem 0.5rem;
+  transition: box-shadow 0.3s;
+  display:inline-flex;
+}
+#navigation_wrapper div:hover{
+  box-shadow: inset 0px 0px 5px 1px gray;
+}
+#navigation_wrapper img{
+  height:2rem;
+}
+#content_wrapper{
+  height:35rem;
+  overflow: auto;
+  background-color: whitesmoke;
+  box-shadow: 0px 0px 4px 2px gray;
+  margin:0.5rem 0;
+  padding:0.5rem 1rem;
+  transition:margin 0.5s;
+}
+#content_wrapper:hover{
+  margin-top:1rem;
+  margin-bottom:1rem;
+}
+
+form>div{
+  display:flex;
+  justify-content: flex-start;
+}

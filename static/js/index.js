@@ -119,37 +119,44 @@ function ajaxUpload(method,url,content)
   {
     if(this.readyState == 4&&this.status==200)
     { 
-      //alert(this.readyState);  
-      var data = JSON.parse(this.responseText);
-      if(data.state == 'ok')
-      {
-        var content = document.getElementById('content_wrapper');
-        notice('上传成功');
-        content.innerHTML=data.content;
-      }
-      else if(data.state=='notice')
-      {
-        notice(data.info);
-      }
-      else
-      {
-        switch(data.info)
+      //alert(this.readyState);
+      try
+      {  
+        var data = JSON.parse(this.responseText);
+        if(data.state == 'ok')
         {
-          case 'file_exist':
-            notice('文件已存在');
-            break;
-          case 'no_file':
-            notice('文件不存在');
-            break;
-          case 'invalid_filename':
-            notice('文件名不合法');
-            break;
-          case 'beyond_limit':
-            notice('文件过大，不能超过20M');
-          default:
-            alert(this.responseText);
-            break;
+          var content = document.getElementById('content_wrapper');
+          notice('上传成功');
+          content.innerHTML=data.content;
         }
+        else if(data.state=='notice')
+        {
+          notice(data.info);
+        }
+        else
+        {
+          switch(data.info)
+          {
+            case 'file_exist':
+              notice('文件已存在');
+              break;
+            case 'no_file':
+              notice('文件不存在');
+              break;
+            case 'invalid_filename':
+              notice('文件名不合法');
+              break;
+            case 'beyond_limit':
+              notice('文件过大，不能超过20M');
+            default:
+              alert(this.responseText);
+              break;
+          }
+        }
+      }
+      catch(error)
+      {
+        notice('失败');
       }
     }
   }
@@ -176,7 +183,7 @@ function home()
 
 function uploadFile(id)
 {
-  file_handle = document.getElementById(id);
+  var file_handle = document.getElementById(id);
   if(file_handle.value)
   {
     if(file_handle.files[0].size > 20971520)
@@ -185,10 +192,12 @@ function uploadFile(id)
         notice("文件过大，最多20M");
         return;
     }
+    document.getElementById('info').innerHTML = file_handle.files[0].name;
     var url = 'index.php?r=MainPage/uploadFile';
     var file_form = document.getElementById("file_form");
     var formdata = new FormData(file_form);
     ajaxUpload('POST',url,formdata);
+    file_handle.value=null;
   }
 }
 
@@ -199,6 +208,7 @@ function uploadProgress(evt)
   {
     var percentage = Math.round(evt.loaded*100/evt.total);
     process.style.width = percentage+"%";
+    process.innerHTML = process.style.width;
   }
 }
 function uploadComplete()

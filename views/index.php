@@ -63,5 +63,5 @@
     </tbody>
   </table>
 </div>
-<div id='end_wrapper'>
+<div id="end_wrapper">
 </div>

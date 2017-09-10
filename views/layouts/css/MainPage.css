@@ -64,21 +64,28 @@ a{
   margin:0.5rem auto;
 }
 #layout_state{
-  height:0.5rem;
-  width:95%;
-  line-height: 3em;
+  height:5rem;
+  width:20rem;
+  line-height: 2.5rem;
+  text-align: center;
   border-radius:0.25rem;
   background-color: whitesmoke;
   box-shadow: 0px 0px 4px 2px gray;
   position:fixed;
-  bottom:-2rem;
-  left:2.5%;
-  transition:bottom 0.5s;
-  transition-timing-function: cubic-bezier(0.68, -0.55, 0.27, 1.55);
+  bottom:-7rem;
+  right:50%;
+  transform:translateX(50%);
+  transition:bottom 0.8s;
+}
+#layout_state #info{
+  height:50%;
+  overflow: auto;
 }
 #layout_state #process{
-  height:100%;
-  width:0;
+  height:50%;
+  width:70%;
+  color:white;
   background-color:gray;
-  border-radius:0.25rem;
+  border-bottom-left-radius: 0.25rem;
+  border-bottom-right-radius: 0.25rem;
 }

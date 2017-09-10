@@ -17,7 +17,8 @@
       <?php echo $view_content?>
     </div>
     <div id="layout_state">
-      <div id="process"></div>
+      <div id="info">文件名</div>
+      <div id="process">50%</div>
     </div>
   <script src="./views/layouts/js/MainPage.js" type='text/javascript'></script>
   <script src="<?php echo $view_js?>" type='text/javascript'></script>

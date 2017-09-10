@@ -8,12 +8,12 @@ function notice(message)
 function stateOn()
 {
   var state_dom = document.getElementById('layout_state');
-  state_dom.style.bottom = '0.5rem';
+  state_dom.style.bottom = '1rem';
 }
 function stateOff()
 {
   var state_dom = document.getElementById('layout_state');
-  state_dom.style.bottom = '-2rem';
+  state_dom.style.bottom = '-7rem';
 }
 function logout()
 {

@@ -380,5 +380,20 @@
       $_SESSION['path'] = NULL;
       return $this->index(true);
     }
+
+    public function uploadTest()
+    {
+      $file = $_FILES['upload_file'];
+      echo '结果如下';
+      print_r($file);
+      echo '@'.$_POST['md5'];
+      echo '@'.md5_file($file['tmp_name']);
+      echo '@'.md5($_POST['test']);
+      //echo '@'.$_POST['test'];
+      //echo '@'.file_get_contents($file['tmp_name']);
+      exit;
+    }
   }
+
+  
 ?>
